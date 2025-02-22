@@ -1,0 +1,159 @@
+<template>
+	<view class="container">
+		<view class="range">
+			<view class="item" :class="{'range-active': range === 'atLeast'}"
+				style="margin-left: 4px;margin-right: 2px;" @click="range = 'atLeast'">≥ 至少</view>
+			<view class="item" :class="{'range-active': range === 'exactly'}"
+				style="margin-left: 2px;margin-right: 4px;" @click="range = 'exactly'">= 精确</view>
+		</view>
+		<view class="middle-text">您的屏幕像素是</view>
+		<view class="box">
+			<view v-for="tab in tabs" :key="tab" class="tabs">{{ tab }}</view>
+		</view>
+		<view class="list-box">
+			<view v-for="tab in tabs" :key="tab" class="list-box-container">
+				<view v-for="item in resolutions[tab]" :key="item" class="item"
+					:class="{'item-active': item === currentResolution}" @click="handleClickResolution(item)">{{ item }}
+				</view>
+			</view>
+		</view>
+		<view class="range resolution-input-container">
+			<view class="tn-p-xs">自定义像素</view>
+			<view class="input">
+				<tn-input type="number" :border="false" placeholder="宽" text-align="center" />
+			</view>
+			<view class="mult">×</view>
+			<view class="input">
+				<tn-input type="number" :border="false" placeholder="高" text-align="center" />
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	const currentTabIndex = ref(0)
+	const resolutions = {
+		'16:9': ['1280 × 720', '1600 × 900', '1920 × 1080', '2560 × 1440', '3840 × 2160'],
+		'16:10': ['1280 × 800', '1600 × 1000', '1920 × 1200', '2560 × 1600', '3840 × 2400'],
+		'4:3': ['1280 × 960', '1600 × 1200', '1920 × 1440', '2560 × 1920', '3840 × 2880'],
+		'5:4': ['1280 × 1024', '1600 × 1280', '1920 × 1536', '2560 × 2048', '3840 × 3072'],
+	}
+	const tabs = computed(() => Object.keys(resolutions))
+
+	const range = ref<'atLeast' | 'exactly'>('atLeast')
+	const currentResolution = ref('')
+
+	function handleClickResolution(res) {
+		if (res === currentResolution.value) {
+			currentResolution.value = ''
+		} else {
+			currentResolution.value = res
+		}
+	}
+</script>
+
+<style scoped lang="scss">
+	@mixin default-bg {
+		text-align: center;
+		line-height: 28px;
+		text-shadow: 1px 1px 3px rgba(0, 0, 0, .75);
+		background-color: #353535;
+		background-image: linear-gradient(to bottom, #404040 0, #292929 100%);
+		border-radius: 2px;
+		transition-property: color, background, text-shadow, box-shadow;
+		transition-duration: .25s;
+	}
+
+	@mixin active-bg {
+		color: #fff;
+		background-color: #5e5e5e;
+		background-image: linear-gradient(to bottom, #777 0, #444 100%);
+	}
+
+	.container {
+		display: flex;
+		align-items: center;
+		padding: 12px;
+		background: linear-gradient(to bottom, #333 0, rgba(51, 51, 51, .9) 100%);
+		box-shadow: 0 20px 15px rgba(0, 0, 0, .7);
+		// border-bottom: 1px solid rgba(0, 0, 0, .6);
+		color: #aaa;
+
+
+		.range {
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+			height: 36px;
+			background-color: rgba(30, 30, 30, .5);
+			box-shadow: inset 1px 1px 1px rgba(0, 0, 0, .4), 1px 1px 0 rgba(127, 127, 127, .1);
+			border-radius: 4px;
+
+			.item {
+				flex: 1;
+				margin: 4px 0;
+				@include default-bg;
+			}
+
+			.range-active {
+				@include active-bg;
+			}
+		}
+
+		.middle-text {
+			padding: 12px 0;
+		}
+
+		.box {
+			display: flex;
+			flex-direction: row;
+			margin-bottom: 2px;
+			width: 100%;
+			border-bottom: 1px solid #fff;
+
+			.tabs {
+				flex: 1;
+				padding-bottom: 5px;
+				text-align: center;
+				color: #fff;
+			}
+		}
+
+		.list-box {
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+
+			.list-box-container {
+				flex: 1;
+
+				.item {
+					text-align: center;
+					font-size: 12px;
+					margin: 2px;
+					@include default-bg;
+				}
+
+				.item-active {
+					@include active-bg;
+				}
+			}
+		}
+
+		.mult {
+			padding: 0 4px;
+		}
+
+		.resolution-input-container {
+			display: flex;
+			flex-direction: row;
+			margin-top: 12px;
+			align-items: center;
+
+			.input {
+				flex: 1;
+				color: #fff
+			}
+		}
+	}
+</style>

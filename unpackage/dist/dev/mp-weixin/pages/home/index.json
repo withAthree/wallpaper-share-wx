@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "uni-app x",
+  "usingComponents": {
+    "layouts": "../../layouts/index",
+    "filter": "../../components/Filter"
+  }
+}

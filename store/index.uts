@@ -1,0 +1,11 @@
+import { FilterMode } from "../types"
+
+export type State = {
+	currentFilterMode : FilterMode
+}
+// 实例化为state
+export const state = reactive({ currentFilterMode: 'date_added' } as State)
+// 定义修改属性值的方法
+export const setCurrentFilterMode = (value : FilterMode) => {
+	state.currentFilterMode = value
+}

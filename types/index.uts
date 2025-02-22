@@ -1,0 +1,9 @@
+export type FilterType = 'resolution' | 'ratio' | 'model';
+
+export type FilterMode = 'random' | 'date_added' | 'toplist'
+
+export const FilterModes : Recode<FilterMode, string> = {
+	random: "随机",
+	date_added: "最新",
+	toplist: "最受欢迎"
+}

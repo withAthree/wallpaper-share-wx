@@ -1,0 +1,72 @@
+<template>
+	<Layouts>
+		<view class="main">
+			<view class="filter-box">
+				<view class="filter-btn" @click="handleOpenFilterModal('resolution')">
+					像素
+				</view>
+				<view class="filter-btn" @click="handleOpenFilterModal('ratio')">
+					比例
+				</view>
+				<view class="filter-btn" @click="handleOpenFilterModal('model')">
+					模式
+				</view>
+				<view v-if="state.currentFilterMode === 'toplist'" class="filter-btn"
+					@click="handleOpenFilterModal('resolution')">
+					日期
+				</view>
+			</view>
+		</view>
+		<Filter v-model="filterModalShow" :type="currentFilterType" />
+	</Layouts>
+</template><strong></strong>
+
+<script setup lang="uts">
+	import { ref } from 'vue'
+	import Layouts from '@/layouts/index.uvue';
+	import Filter from '@/components/Filter.uvue'
+	import { FilterType, FilterMode } from '@/types/index.uts'
+	import { state } from '@/store/index.uts'
+
+
+	const filterModalShow = ref(false)
+	const currentFilterType = ref<FilterType>('resolution')
+
+	function handleOpenFilterModal(filterType : FilterType) {
+		currentFilterType.value = filterType
+		filterModalShow.value = true
+	}
+</script>
+
+<style scoped lang="scss">
+	.main {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		padding: 0 0 40rpx 0;
+
+		.filter-box {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			height: 100rpx;
+			width: 100%;
+			background-color: rgba(0, 0, 0, 0.1);
+			backdrop-filter: blur(40px);
+
+			.filter-btn {
+				flex: 1;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100%;
+				color: #fff;
+				border-radius: 20rpx;
+
+				&:hover {
+					background: rgba(128, 128, 128, 0.2);
+				}
+			}
+		}
+	}
+</style>

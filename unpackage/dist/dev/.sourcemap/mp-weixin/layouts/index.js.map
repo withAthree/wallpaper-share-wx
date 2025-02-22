@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sources":["../../HBuilderX/plugins/uniapp-cli-vite/uniComponent:/RDovRGV2ZWxvcG1lbnQvcHJvamVjdC93YWxscGFwZXItc2hhcmUtd3gvbGF5b3V0cy9pbmRleC51dnVl"],"sourcesContent":["import Component from 'D:/Development/project/wallpaper-share-wx/layouts/index.uvue'\nwx.createComponent(Component)"],"names":[],"mappings":";;;;;;;;;;;AACA,GAAG,gBAAgB,SAAS;"}

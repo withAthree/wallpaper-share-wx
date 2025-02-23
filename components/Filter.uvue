@@ -1,12 +1,18 @@
 <template>
 	<tn-popup :model-value="props.modelValue" open-direction="top" bg-color="transparent" :overlay-opacity="0"
 		@overlay-click="emits('update:modelValue',false)">
-		<Resolution />
+		<Resolution v-show="props.type === 'resolution'" />
+		<Ratio v-show="props.type === 'ratio'" />
+		<Sort v-show="props.type === 'model'" />
+		<SortDateRange v-show="props.type === 'dateRange'" />
 	</tn-popup>
 </template>
 
 <script setup lang="uts">
-	import { Resolution } from './Resolution.uvue'
+	import Resolution from './Resolution.uvue'
+	import Ratio from './Ratio.uvue'
+	import Sort from './Sort.uvue'
+	import SortDateRange from './SortDateRange.uvue'
 	import { FilterType } from '@/types/index.uts'
 
 	const props = defineProps<{
@@ -14,8 +20,6 @@
 		type : FilterType
 	}>()
 	const emits = defineEmits(['update:modelValue'])
-	watch(() => props.type, val => console.log(111, val))
-	watch(() => props.modelValue, val => console.log(222, val))
 </script>
 
 <style scoped lang="scss">

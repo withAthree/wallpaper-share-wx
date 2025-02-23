@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "tn-lazy-load": "../../../uni_modules/tuniaoui-vue3/components/lazy-load/src/lazy-load"
+  }
+}

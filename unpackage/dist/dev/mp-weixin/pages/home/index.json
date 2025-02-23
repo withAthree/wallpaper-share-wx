@@ -1,7 +1,9 @@
 {
   "navigationBarTitleText": "uni-app x",
   "usingComponents": {
+    "tn-water-fall": "../../uni_modules/tuniaoui-vue3/components/water-fall/src/water-fall",
     "layouts": "../../layouts/index",
-    "filter": "../../components/Filter"
+    "filter": "../../components/Filter",
+    "lazy-load": "./components/LazyLoad"
   }
 }

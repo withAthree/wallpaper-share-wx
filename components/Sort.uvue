@@ -1,0 +1,70 @@
+<template>
+	<view class="container">
+		<view class="box">
+			<view v-for="key in Object.keys(FilterModes)" :key="key" class="item"
+				:class="{'item-active': checkedSort === key}" @click.stop="handleClickSort(key)">{{FilterModes[key]}}
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	import { setCurrentSort } from '../store'
+	import { FilterMode, FilterModes } from '../types'
+
+
+	const checkedSort = ref<FilterMode>('random')
+
+	function handleClickSort(res) {
+		checkedSort.value = res
+	}
+
+	watch(checkedSort, val => setCurrentSort(val))
+</script>
+
+<style scoped lang="scss">
+	@mixin default-bg {
+		text-align: center;
+		line-height: 28px;
+		text-shadow: 1px 1px 3px rgba(0, 0, 0, .75);
+		background-color: #353535;
+		background-image: linear-gradient(to bottom, #404040 0, #292929 100%);
+		border-radius: 2px;
+		transition-property: color, background, text-shadow, box-shadow;
+		transition-duration: .25s;
+	}
+
+	@mixin active-bg {
+		color: #fff;
+		background-color: #5e5e5e;
+		background-image: linear-gradient(to bottom, #777 0, #444 100%);
+	}
+
+	.container {
+		display: flex;
+		align-items: center;
+		padding: 12px;
+		background: linear-gradient(to bottom, #333 0, rgba(51, 51, 51, .9) 100%);
+		box-shadow: 0 20px 15px rgba(0, 0, 0, .7);
+		// border-bottom: 1px solid rgba(0, 0, 0, .6);
+		color: #aaa;
+
+		.box {
+			display: flex;
+			flex-direction: row;
+			width: 70%;
+
+			.item {
+				flex: 1;
+				text-align: center;
+				font-size: 12px;
+				margin: 2px;
+				@include default-bg;
+			}
+
+			.item-active {
+				@include active-bg;
+			}
+		}
+	}
+</style>

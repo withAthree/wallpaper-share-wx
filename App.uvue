@@ -42,4 +42,12 @@
 		padding: 0;
 		box-sizing: border-box;
 	}
+
+	.tn-lazy-load,
+	.tn-lazy-load__image,
+	.tn-lazy-load__container,
+	.tn-lazy-load__loading,
+	.tn-lazy-load__error {
+		background: transparent !important;
+	}
 </style>

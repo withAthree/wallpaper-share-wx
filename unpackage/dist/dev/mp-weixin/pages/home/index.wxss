@@ -37,7 +37,7 @@
   justify-content: space-around;
   height: 100rpx;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.3);
   -webkit-backdrop-filter: blur(40px);
           backdrop-filter: blur(40px);
 }
@@ -46,10 +46,34 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0 12px;
   height: 100%;
   color: #fff;
   border-radius: 20rpx;
 }
+.main .filter-box .filter-btn text.data-v-e6634c2d {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+}
 .main .filter-box .filter-btn.data-v-e6634c2d:hover {
   background: rgba(128, 128, 128, 0.2);
+}
+.main .water-fall-container.data-v-e6634c2d {
+  width: 100%;
+  flex: 1;
+  overflow: auto;
+}
+.main .water-fall-container.data-v-e6634c2d .tn-water-fall {
+  flex-direction: row;
+}
+.main .water-fall-container .image-data.data-v-e6634c2d {
+  width: calc(100% - 20rpx);
+  margin: 10rpx;
+}
+.main .water-fall-container .image-data .image.data-v-e6634c2d {
+  width: 100%;
+  height: auto;
 }

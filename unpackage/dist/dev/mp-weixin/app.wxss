@@ -680,4 +680,11 @@ view {
 		padding: 0;
 		box-sizing: border-box;
 }
+.tn-lazy-load,
+	.tn-lazy-load__image,
+	.tn-lazy-load__container,
+	.tn-lazy-load__loading,
+	.tn-lazy-load__error {
+		background: transparent !important;
+}
 page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}[data-c-h="true"]{display: none !important;}

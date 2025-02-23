@@ -1,11 +1,31 @@
-import { FilterMode } from "../types"
+import { FilterMode, SortDateRange } from "../types"
 
 export type State = {
-	currentFilterMode : FilterMode
+	currentResolution : string,
+	currentRatios : string[],
+	currentSort : FilterMode,
+	currentDateRange : SortDateRange
 }
 // 实例化为state
-export const state = reactive({ currentFilterMode: 'date_added' } as State)
-// 定义修改属性值的方法
-export const setCurrentFilterMode = (value : FilterMode) => {
-	state.currentFilterMode = value
+export const state = reactive({
+	currentResolution: '',
+	currentRatios: [],
+	currentSort: 'random',
+	currentDateRange: 'last_month'
+} as State)
+
+export const setCurrentResolution = (value : string) => {
+	state.currentResolution = value
+}
+
+export const setCurrentRatios = (value : string[]) => {
+	state.currentRatios = value
+}
+
+export const setCurrentSort = (value : FilterMode) => {
+	state.currentSort = value
+}
+
+export const setCurrentDateRange = (value : SortDateRange) => {
+	state.currentDateRange = value
 }

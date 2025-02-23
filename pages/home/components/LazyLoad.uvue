@@ -1,0 +1,14 @@
+<template>
+	<view class="lazy-load-box">
+		<tn-lazy-load :src="props.src" mode="widthFix" :threshold="300" height="auto" />
+	</view>
+</template>
+
+<script setup lang="uts">
+	const props = defineProps<{
+		src : string
+	}>()
+</script>
+
+<style scoped lang="scss">
+</style>

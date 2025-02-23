@@ -1,0 +1,108 @@
+<template>
+	<view class="container">
+		<view class="box">
+			<view v-for="tab in tabs" :key="tab" class="tabs">{{ tab }}</view>
+		</view>
+		<view class="list-box">
+			<view v-for="tab in tabs" :key="tab" class="list-box-container">
+				<view v-for="item in ratios[tab]" :key="item" class="item"
+					:class="{'item-active': checkedRatios.includes(item)}" @click.stop="handleClickRatio(item)">
+					{{ item }}
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	import { setCurrentRatios } from '../store'
+
+	const ratios = {
+		'宽屏': ['16 × 9', '16 × 10'],
+		'超宽屏': ['21 × 9', '32 × 9', '48 × 9'],
+		'竖屏': ['9 × 16', '10 × 16', '9 × 18'],
+		'其他': ['1 × 1', '3 × 2', '4 × 3', '5 × 4'],
+	}
+	const tabs = computed(() => Object.keys(ratios))
+	const checkedRatios = ref<string[]>([])
+
+	function handleClickRatio(res) {
+		if (checkedRatios.value.includes(res)) {
+			const index = checkedRatios.value.indexOf(res)
+			checkedRatios.value.splice(index, 1);
+		} else {
+			checkedRatios.value.push(res)
+		}
+	}
+
+	watch(checkedRatios, val => setCurrentRatios(val), { deep: true })
+</script>
+
+<style scoped lang="scss">
+	@mixin default-bg {
+		text-align: center;
+		line-height: 28px;
+		text-shadow: 1px 1px 3px rgba(0, 0, 0, .75);
+		background-color: #353535;
+		background-image: linear-gradient(to bottom, #404040 0, #292929 100%);
+		border-radius: 2px;
+		transition-property: color, background, text-shadow, box-shadow;
+		transition-duration: .25s;
+	}
+
+	@mixin active-bg {
+		color: #fff;
+		background-color: #5e5e5e;
+		background-image: linear-gradient(to bottom, #777 0, #444 100%);
+	}
+
+	.container {
+		display: flex;
+		align-items: center;
+		padding: 12px;
+		background: linear-gradient(to bottom, #333 0, rgba(51, 51, 51, .9) 100%);
+		box-shadow: 0 20px 15px rgba(0, 0, 0, .7);
+		// border-bottom: 1px solid rgba(0, 0, 0, .6);
+		color: #aaa;
+
+		.middle-text {
+			padding: 12px 0;
+		}
+
+		.box {
+			display: flex;
+			flex-direction: row;
+			margin-bottom: 2px;
+			width: 100%;
+			border-bottom: 1px solid #fff;
+
+			.tabs {
+				flex: 1;
+				padding-bottom: 5px;
+				text-align: center;
+				color: #fff;
+			}
+		}
+
+		.list-box {
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+
+			.list-box-container {
+				flex: 1;
+
+				.item {
+					text-align: center;
+					font-size: 12px;
+					margin: 2px;
+					@include default-bg;
+				}
+
+				.item-active {
+					@include active-bg;
+				}
+			}
+		}
+	}
+</style>

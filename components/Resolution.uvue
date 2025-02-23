@@ -13,7 +13,8 @@
 		<view class="list-box">
 			<view v-for="tab in tabs" :key="tab" class="list-box-container">
 				<view v-for="item in resolutions[tab]" :key="item" class="item"
-					:class="{'item-active': item === currentResolution}" @click="handleClickResolution(item)">{{ item }}
+					:class="{'item-active': item === currentResolution}" @click.stop="handleClickResolution(item)">
+					{{ item }}
 				</view>
 			</view>
 		</view>
@@ -31,7 +32,8 @@
 </template>
 
 <script setup lang="uts">
-	const currentTabIndex = ref(0)
+	import { setCurrentResolution } from '../store'
+
 	const resolutions = {
 		'16:9': ['1280 × 720', '1600 × 900', '1920 × 1080', '2560 × 1440', '3840 × 2160'],
 		'16:10': ['1280 × 800', '1600 × 1000', '1920 × 1200', '2560 × 1600', '3840 × 2400'],
@@ -50,6 +52,8 @@
 			currentResolution.value = res
 		}
 	}
+
+	watch(currentResolution, val => setCurrentResolution(val))
 </script>
 
 <style scoped lang="scss">

@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../common/vendor.js");
+const store_index = require("../store/index.js");
 if (!Array) {
   const _easycom_tn_input_1 = common_vendor.resolveComponent("tn-input");
   _easycom_tn_input_1();
@@ -11,7 +12,6 @@ if (!Math) {
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "Resolution",
   setup(__props) {
-    common_vendor.ref(0);
     const resolutions = new UTSJSONObject({
       "16:9": ["1280 × 720", "1600 × 900", "1920 × 1080", "2560 × 1440", "3840 × 2160"],
       "16:10": ["1280 × 800", "1600 × 1000", "1920 × 1200", "2560 × 1600", "3840 × 2400"],
@@ -30,6 +30,9 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         currentResolution.value = res;
       }
     }
+    common_vendor.watch(currentResolution, (val) => {
+      return store_index.setCurrentResolution(val);
+    });
     return (_ctx = null, _cache = null) => {
       const __returned__ = {
         a: common_vendor.unref(range) === "atLeast" ? 1 : "",

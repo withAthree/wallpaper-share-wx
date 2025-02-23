@@ -3,30 +3,48 @@
 		<view class="main">
 			<view class="filter-box">
 				<view class="filter-btn" @click="handleOpenFilterModal('resolution')">
-					像素
+					<text>{{ state.currentResolution || '像素'}}</text>
 				</view>
 				<view class="filter-btn" @click="handleOpenFilterModal('ratio')">
-					比例
+					<text>{{ state.currentRatios.length ? state.currentRatios.join(',') : '比例'}}</text>
 				</view>
 				<view class="filter-btn" @click="handleOpenFilterModal('model')">
-					模式
+					<text>{{ state.currentSort ? FilterModes[state.currentSort] : '排序'}}</text>
 				</view>
-				<view v-if="state.currentFilterMode === 'toplist'" class="filter-btn"
-					@click="handleOpenFilterModal('resolution')">
-					日期
+				<view v-if="state.currentSort === 'toplist'" class="filter-btn"
+					@click="handleOpenFilterModal('dateRange')">
+					<text>{{ state.currentDateRange ? SortDateRanges[state.currentDateRange] : "范围" }}</text>
 				</view>
+			</view>
+
+			<!-- 瀑布流 -->
+			<view class="water-fall-container">
+				<tn-water-fall :data="imgs" style="width: 100%" mode="calc">
+					<template #left="{ item }">
+						<view class="image-data" @click.stop="handleClickImage(item.src)">
+							<LazyLoad class="image" :src="item.src" />
+						</view>
+					</template>
+					<template #right="{ item }">
+						<view class="image-data" @click.stop="handleClickImage(item.src)">
+							<LazyLoad class="image" :src="item.src" />
+						</view>
+					</template>
+				</tn-water-fall>
 			</view>
 		</view>
 		<Filter v-model="filterModalShow" :type="currentFilterType" />
 	</Layouts>
-</template><strong></strong>
+</template>
 
 <script setup lang="uts">
 	import { ref } from 'vue'
 	import Layouts from '@/layouts/index.uvue';
 	import Filter from '@/components/Filter.uvue'
-	import { FilterType, FilterMode } from '@/types/index.uts'
+	import { FilterType, FilterMode, FilterModes, SortDateRanges } from '@/types/index.uts'
 	import { state } from '@/store/index.uts'
+	import { imgs } from "./config.uts"
+	import LazyLoad from './components/LazyLoad.uvue'
 
 
 	const filterModalShow = ref(false)
@@ -35,6 +53,13 @@
 	function handleOpenFilterModal(filterType : FilterType) {
 		currentFilterType.value = filterType
 		filterModalShow.value = true
+	}
+
+	function handleClickImage(src) {
+		console.log(src)
+		uni.navigateTo({
+			url: '/pages/detail/index'
+		})
 	}
 </script>
 
@@ -51,7 +76,7 @@
 			justify-content: space-around;
 			height: 100rpx;
 			width: 100%;
-			background-color: rgba(0, 0, 0, 0.1);
+			background-color: rgba(0, 0, 0, 0.3);
 			backdrop-filter: blur(40px);
 
 			.filter-btn {
@@ -59,12 +84,41 @@
 				display: flex;
 				justify-content: center;
 				align-items: center;
+				padding: 0 12px;
 				height: 100%;
 				color: #fff;
 				border-radius: 20rpx;
 
+				text {
+					width: 100%;
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					text-align: center;
+				}
+
 				&:hover {
 					background: rgba(128, 128, 128, 0.2);
+				}
+			}
+		}
+
+		.water-fall-container {
+			width: 100%;
+			flex: 1;
+			overflow: auto;
+
+			:deep(.tn-water-fall) {
+				flex-direction: row;
+			}
+
+			.image-data {
+				width: calc(100% - 20rpx);
+				margin: 10rpx;
+
+				.image {
+					width: 100%;
+					height: auto;
 				}
 			}
 		}

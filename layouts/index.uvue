@@ -1,12 +1,14 @@
 <template>
-	<view class="layout">
-		<image mode="heightFix" src="/static/images/global-bg.jpg" class="bg"></image>
+	<view class="layout" :class="{'bg-2': !!props.page}">
+		<image v-if="!props.page" mode="heightFix" src="/static/images/global-bg.jpg" class="bg"></image>
 		<slot />
 	</view>
 </template>
 
 <script setup lang="uts">
-
+	const props = defineProps<{
+		page ?: string
+	}>()
 </script>
 
 <style scoped lang="scss">
@@ -20,5 +22,9 @@
 			z-index: -1;
 			transform: translateX(calc(-50% + 100vw));
 		}
+	}
+
+	.bg-2 {
+		background: #171717 url("/static/images/bg-dark-grain.png") top left repeat;
 	}
 </style>

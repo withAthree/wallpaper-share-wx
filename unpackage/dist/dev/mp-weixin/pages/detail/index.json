@@ -1,6 +1,9 @@
 {
   "navigationBarTitleText": "uni-app x",
+  "pageOrientation": "auto",
+  "navigationStyle": "custom",
   "usingComponents": {
+    "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon",
     "layouts": "../../layouts/index"
   }
 }

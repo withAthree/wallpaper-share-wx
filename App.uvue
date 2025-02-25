@@ -1,4 +1,5 @@
 <script lang="uts">
+	import { setOrientation, setDevicePixelRatio } from '@/store'
 	let firstBackTime = 0
 	export default {
 		onLaunch: function () {

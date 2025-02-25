@@ -24,7 +24,6 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       filterModalShow.value = true;
     }
     function handleClickImage(src = null) {
-      common_vendor.index.__f__("log", "at pages/home/index.uvue:59", src);
       common_vendor.index.navigateTo({
         url: "/pages/detail/index"
       });

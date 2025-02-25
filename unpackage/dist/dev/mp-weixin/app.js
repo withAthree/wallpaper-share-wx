@@ -1,22 +1,23 @@
 "use strict";
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const common_vendor = require("./common/vendor.js");
+require("./store/index.js");
 if (!Math) {
   "./pages/home/index.js";
   "./pages/detail/index.js";
 }
 const _sfc_main = common_vendor.defineComponent({
   onLaunch: function() {
-    common_vendor.index.__f__("log", "at App.uvue:5", "App Launch");
+    common_vendor.index.__f__("log", "at App.uvue:6", "App Launch");
   },
   onShow: function() {
-    common_vendor.index.__f__("log", "at App.uvue:8", "App Show");
+    common_vendor.index.__f__("log", "at App.uvue:9", "App Show");
   },
   onHide: function() {
-    common_vendor.index.__f__("log", "at App.uvue:11", "App Hide");
+    common_vendor.index.__f__("log", "at App.uvue:12", "App Hide");
   },
   onExit: function() {
-    common_vendor.index.__f__("log", "at App.uvue:32", "App Exit");
+    common_vendor.index.__f__("log", "at App.uvue:33", "App Exit");
   }
 });
 function createApp() {

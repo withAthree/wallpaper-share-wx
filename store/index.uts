@@ -11,7 +11,7 @@ export const state = reactive({
 	currentResolution: '',
 	currentRatios: [],
 	currentSort: 'random',
-	currentDateRange: 'last_month'
+	currentDateRange: 'last_month',
 } as State)
 
 export const setCurrentResolution = (value : string) => {

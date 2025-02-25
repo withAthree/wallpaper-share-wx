@@ -1,16 +1,27 @@
 <template>
-	<Layouts>
+	<Layouts page="detail">
 		<view class="imagecontent">
 			<movable-area scale-area class="movable-area">
 				<movable-view class="movable-view" direction="all" scale="true" scale-min="1" scale-max="4">
-					<image class="lookimg" src="https://w.wallhaven.cc/full/8o/wallhaven-8ogjjj.png" mode="aspectFit">
+					<image class="lookimg" src="https://w.wallhaven.cc/full/p9/wallhaven-p96vd9.jpg" mode="aspectFit">
 					</image>
 				</movable-view>
 			</movable-area>
 			<view class="tool">
-				喜欢
-				下载
-				分享
+				<view class="btn" @touchstart="downTouch = true" @touchend="downTouch = false"
+					:class="{touch: downTouch}">
+					<view>
+						<tn-icon name="folder-download-fill" color="#fff" size="24px" />
+						<text class="btn-text">下载</text>
+					</view>
+				</view>
+				<view class="tn-mt-lg btn" @touchstart="shareTouch = true" @touchend="shareTouch = false"
+					:class="{touch: shareTouch}">
+					<view>
+						<tn-icon name="send-fill" color="#fff" size="24px" />
+						<text class="btn-text">分享</text>
+					</view>
+				</view>
 			</view>
 		</view>
 	</Layouts>
@@ -18,6 +29,9 @@
 
 <script setup lang="uts">
 	import Layouts from '@/layouts/index.uvue';
+
+	const downTouch = ref(false)
+	const shareTouch = ref(false)
 
 	onBeforeMount(() => {
 		uni.setNavigationBarTitle({
@@ -27,6 +41,10 @@
 </script>
 
 <style scoped lang="scss">
+	@function tovmin($rpx) {
+		@return #{$rpx * 100 / 750}vmin;
+	}
+
 	.movable-view {
 		height: 100%;
 		width: 100%;
@@ -39,18 +57,45 @@
 	}
 
 	.lookimg {
-		border: 1px solid red
+		// border: 1px solid red
 	}
 
 	.imagecontent {
 		position: relative;
 		width: 100%;
 		height: 100%;
-		padding: 20rpx;
 	}
 
 	.tool {
 		position: absolute;
-		top: 0
+		right: tovmin(20);
+		bottom: tovmin(200);
+
+		.btn {
+			width: tovmin(100);
+			height: tovmin(100);
+
+			&>view {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+		}
+
+		.touch {
+
+			&>view {
+				transform: scale(0.9);
+			}
+
+			background: rgba(255, 255, 255, 0.01);
+			backdrop-filter: blur(4px);
+			border-radius: 50%;
+		}
+
+		.btn-text {
+			color: #fff;
+			font-size: tovmin(26);
+		}
 	}
 </style>

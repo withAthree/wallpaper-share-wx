@@ -1,12 +1,19 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+if (!Array) {
+  const _easycom_tn_icon_1 = common_vendor.resolveComponent("tn-icon");
+  _easycom_tn_icon_1();
+}
+const _easycom_tn_icon = () => "../../uni_modules/tuniaoui-vue3/components/icon/src/icon.js";
 if (!Math) {
-  common_vendor.unref(Layouts)();
+  (_easycom_tn_icon + common_vendor.unref(Layouts))();
 }
 const Layouts = () => "../../layouts/index.js";
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "index",
   setup(__props) {
+    const downTouch = common_vendor.ref(false);
+    const shareTouch = common_vendor.ref(false);
     common_vendor.onBeforeMount(() => {
       common_vendor.index.setNavigationBarTitle({
         title: "1920 × 1080"
@@ -14,8 +21,33 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     });
     return (_ctx = null, _cache = null) => {
       const __returned__ = {
-        a: _ctx.virtualHostId,
-        b: common_vendor.p({
+        a: common_vendor.p({
+          name: "folder-download-fill",
+          color: "#fff",
+          size: "24px"
+        }),
+        b: common_vendor.o(($event = null) => {
+          return downTouch.value = true;
+        }),
+        c: common_vendor.o(($event = null) => {
+          return downTouch.value = false;
+        }),
+        d: common_vendor.unref(downTouch) ? 1 : "",
+        e: common_vendor.p({
+          name: "send-fill",
+          color: "#fff",
+          size: "24px"
+        }),
+        f: common_vendor.o(($event = null) => {
+          return shareTouch.value = true;
+        }),
+        g: common_vendor.o(($event = null) => {
+          return shareTouch.value = false;
+        }),
+        h: common_vendor.unref(shareTouch) ? 1 : "",
+        i: _ctx.virtualHostId,
+        j: common_vendor.p({
+          page: "detail",
           id: _ctx.virtualHostId
         })
       };

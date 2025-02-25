@@ -23,11 +23,13 @@
 					<template #left="{ item }">
 						<view class="image-data" @click.stop="handleClickImage(item.src)">
 							<LazyLoad class="image" :src="item.src" />
+							<view class="tag">1920 × 1080</view>
 						</view>
 					</template>
 					<template #right="{ item }">
 						<view class="image-data" @click.stop="handleClickImage(item.src)">
 							<LazyLoad class="image" :src="item.src" />
+							<view class="tag">1920 × 1080</view>
 						</view>
 					</template>
 				</tn-water-fall>
@@ -56,9 +58,8 @@
 	}
 
 	function handleClickImage(src) {
-		console.log(src)
 		uni.navigateTo({
-			url: '/pages/detail/index'
+			url: '/pages/detail/index',
 		})
 	}
 </script>
@@ -113,8 +114,19 @@
 			}
 
 			.image-data {
+				position: relative;
 				width: calc(100% - 20rpx);
 				margin: 10rpx;
+
+				.tag {
+					position: absolute;
+					bottom: 0;
+					width: 100%;
+					text-align: center;
+					color: #fff;
+					background-color: rgba(0, 0, 0, .165);
+					background-image: linear-gradient(to bottom, rgba(0, 0, 0, .03) 0, rgba(0, 0, 0, .3) 100%);
+				}
 
 				.image {
 					width: 100%;

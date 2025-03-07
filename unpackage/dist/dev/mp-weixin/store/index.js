@@ -9,7 +9,8 @@ class State extends UTS.UTSType {
           currentResolution: { type: String, optional: false },
           currentRatios: { type: UTS.UTSType.withGenerics(Array, [String]), optional: false },
           currentSort: { type: "Unknown", optional: false },
-          currentDateRange: { type: "Unknown", optional: false }
+          currentDateRange: { type: "Unknown", optional: false },
+          tempDir: { type: String, optional: false }
         };
       }
     };
@@ -21,6 +22,7 @@ class State extends UTS.UTSType {
     this.currentRatios = this.__props__.currentRatios;
     this.currentSort = this.__props__.currentSort;
     this.currentDateRange = this.__props__.currentDateRange;
+    this.tempDir = this.__props__.tempDir;
     delete this.__props__;
   }
 }
@@ -28,8 +30,12 @@ const state = common_vendor.reactive(new State({
   currentResolution: "",
   currentRatios: [],
   currentSort: "random",
-  currentDateRange: "last_month"
+  currentDateRange: "last_month",
+  tempDir: ""
 }));
+const setTempDir = (value) => {
+  state.tempDir = value;
+};
 const setCurrentResolution = (value) => {
   state.currentResolution = value;
 };
@@ -46,5 +52,6 @@ exports.setCurrentDateRange = setCurrentDateRange;
 exports.setCurrentRatios = setCurrentRatios;
 exports.setCurrentResolution = setCurrentResolution;
 exports.setCurrentSort = setCurrentSort;
+exports.setTempDir = setTempDir;
 exports.state = state;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/store/index.js.map

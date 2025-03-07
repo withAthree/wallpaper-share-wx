@@ -35,6 +35,9 @@
   overflow: hidden;
 }
 .imagecontent.data-v-e8100d2a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
   width: 100%;
   height: 100%;
@@ -65,4 +68,12 @@
 .tool .btn-text.data-v-e8100d2a {
   color: #fff;
   font-size: 3.4666666667vmin;
+}
+.model-box.data-v-e8100d2a .tn-modal__operation {
+  flex-direction: row;
+}
+.big-loading.data-v-e8100d2a {
+  position: absolute;
+  width: 100vh;
+  height: 100vh;
 }

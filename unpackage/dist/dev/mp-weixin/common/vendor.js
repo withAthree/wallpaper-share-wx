@@ -5758,6 +5758,10 @@ function createScopedSlotInvoker(instance) {
   invoker.slots = {};
   return invoker;
 }
+function setRef(ref2, id, opts = {}) {
+  const { $templateRefs } = getCurrentInstance();
+  $templateRefs.push({ i: id, r: ref2, k: opts.k, f: opts.f });
+}
 function setUniElementId(id, options, ref2, refOpts) {
   const ins = getCurrentInstance();
   if (ins) {
@@ -5842,6 +5846,7 @@ const e = (target, ...sources) => extend(target, ...sources);
 const n = (value) => normalizeClass(value);
 const t = (val) => toDisplayString(val);
 const p = (props) => renderProps(props);
+const sr = (ref2, id, opts) => setRef(ref2, id, opts);
 const sei = setUniElementId;
 function createApp$1(rootComponent, rootProps = null) {
   rootComponent && (rootComponent.mpType = "app");
@@ -7698,9 +7703,9 @@ function initOnError() {
   };
 }
 function initRuntimeSocketService() {
-  const hosts = "192.168.31.114,127.0.0.1";
+  const hosts = "192.168.84.46,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_m4Je_l";
+  const id = "mp-weixin_o8QOil";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -9376,6 +9381,8 @@ exports.inject = inject;
 exports.isArray = isArray;
 exports.isFunction = isFunction;
 exports.isObject = isObject;
+exports.isPromise = isPromise;
+exports.isRef = isRef;
 exports.isString = isString;
 exports.isSymbol = isSymbol;
 exports.n = n;
@@ -9393,6 +9400,7 @@ exports.ref = ref;
 exports.resolveComponent = resolveComponent;
 exports.s = s;
 exports.sei = sei;
+exports.sr = sr;
 exports.t = t;
 exports.toRef = toRef;
 exports.toRefs = toRefs;

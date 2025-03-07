@@ -1,20 +1,26 @@
 <template>
 	<Layouts page="detail">
+		<tn-notify ref="notifyRef" />
+		<tn-modal ref="modalRef" class="model-box" />
 		<view class="imagecontent">
-			<movable-area scale-area class="movable-area">
+			<movable-area v-if="bigFileDownloadSuccess" scale-area class="movable-area">
 				<movable-view class="movable-view" direction="all" scale="true" scale-min="1" scale-max="4">
-					<image class="lookimg" src="https://w.wallhaven.cc/full/p9/wallhaven-p96vd9.jpg" mode="aspectFit">
+					<image class="lookimg" :src="`${uni.env.USER_DATA_PATH}/temp/${bigFileName}`" mode="aspectFit">
 					</image>
 				</movable-view>
 			</movable-area>
+			<tn-loading v-else show animation mode="circle" color="#fff" size="50px" />
 			<view class="tool">
+				<!-- <AdVideo> -->
 				<view class="btn" @touchstart="downTouch = true" @touchend="downTouch = false"
-					:class="{touch: downTouch}">
+					:class="{touch: downTouch}" @click="handleClick">
 					<view>
 						<tn-icon name="folder-download-fill" color="#fff" size="24px" />
-						<text class="btn-text">下载</text>
+						<text v-if="!downloadLoading" class="btn-text">下载</text>
+						<tn-loading v-else show animation mode="circle" color="#fff" />
 					</view>
 				</view>
+				<!-- </AdVideo> -->
 				<view class="tn-mt-lg btn" @touchstart="shareTouch = true" @touchend="shareTouch = false"
 					:class="{touch: shareTouch}">
 					<view>
@@ -29,14 +35,163 @@
 
 <script setup lang="uts">
 	import Layouts from '@/layouts/index.uvue';
+	import AdVideo from '@/components/AdVideo.uvue'
+	import { state } from '@/store'
 
 	const downTouch = ref(false)
 	const shareTouch = ref(false)
+	const downloadLoading = ref(false)
+	const notifyRef = ref(null)
+	const modalRef = ref(null)
+
+	const smallFileName = ref('exqg9w.jpg')
+	const smallFileUrl = 'https://th.wallhaven.cc/small/ex/exqg9w.jpg'
+	const smallImgPath = computed(() => `${state.tempDir}/${smallFileName.value}`)
+	let smallFileDownloadSuccess = false
+	let smallDownloadPath = ''
+
+	const bigFileName = ref('wallhaven-3lxkd6.jpg')
+	const bigFileUrl = 'https://w.wallhaven.cc/full/3l/wallhaven-3lxkd6.jpg'
+	const bigImgPath = computed(() => `${state.tempDir}/${bigFileName.value}`)
+	const bigFileDownloadSuccess = ref(false)
+	const bigDownloadPath = ref('')
+
+
+
 
 	onBeforeMount(() => {
 		uni.setNavigationBarTitle({
 			title: "1920 × 1080"
 		})
+
+		const fileMgr = uni.getFileSystemManager()
+		try {
+			fileMgr.accessSync(`${state.tempDir}/${bigFileName.value}`)
+			console.log('图片存在')
+			bigFileDownloadSuccess.value = true
+		} catch (err) {
+			preDownloadImg()
+			console.error('图片不存在', err)
+		}
+	})
+
+	// 下载图片
+	function preDownloadImg() {
+		uni.downloadFile({
+			url: smallFileUrl,
+			filePath: smallImgPath.value,
+			success: (res) => {
+				console.log('小图下载成功')
+				smallFileDownloadSuccess = true
+				smallDownloadPath = res.filePath
+			},
+			fail: (err) => { console.error('小图下载失败: ', err) }
+		})
+		uni.downloadFile({
+			url: bigFileUrl,
+			filePath: bigImgPath.value,
+			success: (res) => {
+				console.log('大图下载成功')
+				bigFileDownloadSuccess.value = true
+				bigDownloadPath.value = res.filePath
+			},
+			fail: (err) => {
+				console.error('大图下载失败: ', err)
+			},
+		})
+	}
+
+	const downloadFailMsg = () => {
+		notifyRef.value?.show({
+			msg: '保存失败',
+			type: 'danger',
+			position: 'center'
+		})
+	}
+
+	function downloadImg(filePath) {
+		const { albumAuthorized } = uni.getAppAuthorizeSetting()
+		console.log(123, albumAuthorized)
+		if (albumAuthorized === 'authorized') {
+			// 已经获得授权，无需再次请求授权
+			downloadLoading.value = true
+			uni.saveImageToPhotosAlbum({
+				filePath: filePath,
+				success: () => {
+					notifyRef.value?.show({
+						msg: '保存成功',
+						type: 'success',
+						position: 'center'
+					})
+				},
+				fail: () => {
+					downloadFailMsg()
+				},
+				complete: () => {
+					downloadLoading.value = false
+				}
+			})
+		} else if (albumAuthorized === 'denied') {
+			modalRef.value?.showModal({
+				title: '未授权',
+				content: '是否去设置相册授权',
+				showCancel: true,
+				confirmText: '授权',
+				cancelText: '取消',
+				mask: true,
+				maskClosable: false,
+				confirm: () => {
+					uni.openAppAuthorizeSetting()
+				},
+			})
+		}
+	}
+
+	function handleClick() {
+		modalRef.value?.showModal({
+			title: '下载',
+			content: '观看激励视频广告获取原图',
+			showCancel: true,
+			confirmText: '获取原图',
+			cancelText: '直接下载',
+			mask: true,
+			maskClosable: false,
+			confirm: () => {
+				// 看广告，获取原图
+				if (bigFileDownloadSuccess.value) {
+					downloadImg(bigDownloadPath.value)
+				} else {
+					downloadFailMsg()
+				}
+			},
+			cancel: () => {
+				// 获取压缩图
+				if (smallFileDownloadSuccess) {
+					downloadImg(smallDownloadPath)
+				} else {
+					downloadFailMsg()
+				}
+			},
+		})
+	}
+
+	onBeforeUnmount(() => {
+		// 删除缓存
+		// const fileMgr = uni.getFileSystemManager()
+		// if (smallDownloadPath) {
+		// 	fileMgr.unlink({
+		// 		filePath: `${uni.env.USER_DATA_PATH}/temp`,
+		// 		success: () => { console.log('小图片删除成功') },
+		// 		fail: (err) => { console.err('小图片删除失败: ', err) }
+		// 	})
+		// }
+		// if (bigDownloadPath.value) {
+		// 	fileMgr.unlink({
+		// 		filePath: bigDownloadPath.value,
+		// 		success: () => { console.log('大图片删除成功') },
+		// 		fail: (err) => { console.err('大图片删除失败: ', err) }
+		// 	})
+		// }
 	})
 </script>
 
@@ -61,6 +216,9 @@
 	}
 
 	.imagecontent {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		position: relative;
 		width: 100%;
 		height: 100%;
@@ -97,5 +255,15 @@
 			color: #fff;
 			font-size: tovmin(26);
 		}
+	}
+
+	.model-box :deep(.tn-modal__operation) {
+		flex-direction: row;
+	}
+
+	.big-loading {
+		position: absolute;
+		width: 100vh;
+		height: 100vh;
 	}
 </style>

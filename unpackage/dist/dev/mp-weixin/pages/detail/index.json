@@ -3,6 +3,9 @@
   "pageOrientation": "auto",
   "navigationStyle": "custom",
   "usingComponents": {
+    "tn-notify": "../../uni_modules/tuniaoui-vue3/components/notify/src/notify",
+    "tn-modal": "../../uni_modules/tuniaoui-vue3/components/modal/src/modal",
+    "tn-loading": "../../uni_modules/tuniaoui-vue3/components/loading/src/loading",
     "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon",
     "layouts": "../../layouts/index"
   }

@@ -5,6 +5,7 @@ export type State = {
 	currentRatios : string[],
 	currentSort : FilterMode,
 	currentDateRange : SortDateRange
+	tempDir : string
 }
 // 实例化为state
 export const state = reactive({
@@ -12,7 +13,12 @@ export const state = reactive({
 	currentRatios: [],
 	currentSort: 'random',
 	currentDateRange: 'last_month',
+	tempDir: ''
 } as State)
+
+export const setTempDir = (value : string) => {
+	state.tempDir = value
+}
 
 export const setCurrentResolution = (value : string) => {
 	state.currentResolution = value

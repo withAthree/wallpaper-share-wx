@@ -1,9 +1,24 @@
 <script lang="uts">
-	import { setOrientation, setDevicePixelRatio } from '@/store'
+	import { setTempDir, state } from '@/store'
+	import { getLoginCode } from '/login/index.uts'
+	import { login } from '/api/index.uts'
+
 	let firstBackTime = 0
 	export default {
-		onLaunch: function () {
+		onLaunch: async function () {
 			console.log('App Launch')
+			const res = await getLoginCode();
+			const response = await login({ code: res.code })
+			console.log('response', response.data)
+			if (response.code === 200) {
+				uni.setStorageSync('token', response.data.token)
+			}
+
+			setTempDir(`${uni.env.USER_DATA_PATH}/wallpaperTempDirAAA`)
+
+			// 创建临时目录 
+			const fileMgr = uni.getFileSystemManager()
+			fileMgr.mkdirSync(state.tempDir, false)
 		},
 		onShow: function () {
 			console.log('App Show')

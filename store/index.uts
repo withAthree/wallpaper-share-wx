@@ -6,14 +6,16 @@ export type State = {
 	currentSort : FilterMode,
 	currentDateRange : SortDateRange
 	tempDir : string
+	globalLoading : boolean
 }
 // 实例化为state
 export const state = reactive({
 	currentResolution: '',
 	currentRatios: [],
 	currentSort: 'random',
-	currentDateRange: 'last_month',
+	currentDateRange: 'lastMonth',
 	tempDir: ''
+	globalLoading: false
 } as State)
 
 export const setTempDir = (value : string) => {
@@ -34,4 +36,8 @@ export const setCurrentSort = (value : FilterMode) => {
 
 export const setCurrentDateRange = (value : SortDateRange) => {
 	state.currentDateRange = value
+}
+
+export const setGlobalLoading = (value : boolean) => {
+	state.globalLoading = value
 }

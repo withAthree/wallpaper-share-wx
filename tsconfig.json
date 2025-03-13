@@ -1,0 +1,5 @@
+{
+	"types": [
+		"@/uni_modules/tuniaoui-vue3/global.d.ts"
+	]
+}

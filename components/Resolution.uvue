@@ -20,11 +20,11 @@
 		<view class="range resolution-input-container">
 			<view class="tn-p-xs">自定义像素</view>
 			<view class="input">
-				<tn-input type="number" :border="false" placeholder="宽" text-align="center" />
+				<TnInput v-model="customWidth" type="number" :border="false" placeholder="宽" text-align="center" />
 			</view>
 			<view class="mult">×</view>
 			<view class="input">
-				<tn-input type="number" :border="false" placeholder="高" text-align="center" />
+				<TnInput v-model="customHeight" type="number" :border="false" placeholder="高" text-align="center" />
 			</view>
 		</view>
 	</view>
@@ -32,6 +32,7 @@
 
 <script setup lang="uts">
 	import { setCurrentResolution } from '../store'
+	import TnInput from '@/uni_modules/tuniaoui-vue3/components/input/src/input.vue'
 
 	const resolutions = {
 		'16:9': ['1280 × 720', '1600 × 900', '1920 × 1080', '2560 × 1440', '3840 × 2160'],
@@ -43,6 +44,8 @@
 
 	const range = ref<'atLeast' | 'exactly'>('atLeast')
 	const currentResolution = ref('')
+	const customWidth = ref('')
+	const customHeight = ref('')
 
 	function handleClickResolution(res) {
 		if (res === currentResolution.value) {
@@ -52,7 +55,20 @@
 		}
 	}
 
-	watch(currentResolution, val => setCurrentResolution(val))
+	watch([currentResolution, customWidth, customHeight, range], ([res, width, height, r]) => {
+		const w = width !== '' ? Number(width) : undefined
+		const h = height !== '' ? Number(height) : undefined
+		const ran = r === 'atLeast' ? '≥' : '='
+		const isCustom = w !== undefined && w !== null && h !== undefined && h !== null
+		debugger
+		if (isCustom) {
+			setCurrentResolution(`${ran} ${w} × ${h}`)
+		} else if (!isCustom && res) {
+			setCurrentResolution(`${ran} ${res}`)
+		} else {
+			setCurrentResolution('')
+		}
+	})
 </script>
 
 <style scoped lang="scss">

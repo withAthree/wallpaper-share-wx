@@ -1,10 +1,12 @@
 <template>
 	<view class="lazy-load-box">
-		<tn-lazy-load :src="props.src" mode="widthFix" :threshold="300" height="auto" />
+		<TnLazyLoad :src="props.src" mode="widthFix" :threshold="300" height="auto" />
 	</view>
 </template>
 
 <script setup lang="uts">
+	import TnLazyLoad from '@/uni_modules/tuniaoui-vue3/components/lazy-load/src/lazy-load.vue'
+
 	const props = defineProps<{
 		src : string
 	}>()

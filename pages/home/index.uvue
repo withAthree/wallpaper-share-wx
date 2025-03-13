@@ -1,6 +1,10 @@
 <template>
 	<Layouts>
 		<view class="main">
+			<view v-if="state.globalLoading" class="loading">
+				<TnLoading show animation mode="circle" color="#fff" size="50px" style="margin: auto;z-index: 10000" />
+				<TnOverlay show />
+			</view>
 			<view class="filter-box">
 				<view class="filter-btn" @click="handleOpenFilterModal('resolution')">
 					<text>{{ state.currentResolution || '像素'}}</text>
@@ -18,8 +22,10 @@
 			</view>
 
 			<!-- 瀑布流 -->
-			<view class="water-fall-container">
-				<tn-water-fall :data="imgs" style="width: 100%" mode="calc">
+			<scroll-view class="water-fall-container" :refresher-enabled="refresherEnabled" scroll-y refresher-enabled
+				refresher-default-style="white" :refresher-triggered="triggered" @refresherrefresh="refresherrefresh"
+				@refresherrestore="refresherrestore" @refresherabort="refresherabort" @scrolltolower="scrolltolower">
+				<TnWaterFall :data="imgs" style="width: 100%" mode="calc">
 					<template #left="{ item }">
 						<view class="image-data" @click.stop="handleClickImage(item.src)">
 							<LazyLoad class="image" :src="item.src" />
@@ -32,8 +38,9 @@
 							<view class="tag">1920 × 1080</view>
 						</view>
 					</template>
-				</tn-water-fall>
-			</view>
+				</TnWaterFall>
+				<TnLoadmore v-show="showLoadmore" :status="loadmoreStatus" size="14px" color="#fff" class="more" />
+			</scroll-view>
 		</view>
 		<Filter v-model="filterModalShow" :type="currentFilterType" />
 	</Layouts>
@@ -47,10 +54,20 @@
 	import { state } from '@/store/index.uts'
 	import { imgs } from "./config.uts"
 	import LazyLoad from './components/LazyLoad.uvue'
-
+	import type { LoadmoreStatus } from '@/uni_modules/tuniaoui-vue3'
+	import TnLoading from '@/uni_modules/tuniaoui-vue3/components/loading/src/loading.vue'
+	import TnLoadmore from '@/uni_modules/tuniaoui-vue3/components/loadmore/src/loadmore.vue'
+	import TnOverlay from '@/uni_modules/tuniaoui-vue3/components/overlay/src/overlay.vue'
+	import TnWaterFall from '@/uni_modules/tuniaoui-vue3/components/water-fall/src/water-fall.vue'
 
 	const filterModalShow = ref(false)
 	const currentFilterType = ref<FilterType>('resolution')
+	// 当前下拉刷新状态
+	const triggered = ref(false)
+	const refresherEnabled = ref(false)
+	//上拉加载
+	const loadmoreStatus = ref<LoadmoreStatus>('loadmore')
+	const showLoadmore = ref(false)
 
 	function handleOpenFilterModal(filterType : FilterType) {
 		currentFilterType.value = filterType
@@ -59,17 +76,61 @@
 
 	function handleClickImage(src) {
 		uni.navigateTo({
-			url: '/pages/detail/index',
+			url: '/subPages/pages/detail/index',
 		})
 	}
+
+	function refresherpulling() {
+		// console.log('refresherpulling')
+	}
+
+	function refresherrefresh() {
+		console.log('refresherrefresh')
+		triggered.value = 'restore'
+		setTimeout(() => {
+			triggered.value = false
+		}, 3000)
+	}
+
+	function refresherrestore() {
+		console.log('refresherrestore')
+		triggered.value = 'restore';
+	}
+
+	function refresherabort() {
+		console.log('refresherabort')
+		triggered.value = false
+	}
+
+	function scrolltolower() {
+		console.log('scrolltolower')
+		loadmoreStatus.value = 'loading'
+		setTimeout(() => {
+			loadmoreStatus.value = 'loadmore'
+		}, 3000)
+	}
+
+	onMounted(() => {
+		setTimeout(() => {
+			showLoadmore.value = true
+		}, 5000)
+	})
 </script>
 
 <style scoped lang="scss">
 	.main {
 		display: flex;
 		align-items: center;
+		position: relative;
 		height: 100%;
 		padding: 0 0 40rpx 0;
+
+		.loading {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			z-index: 20;
+		}
 
 		.filter-box {
 			display: flex;
@@ -88,7 +149,6 @@
 				padding: 0 12px;
 				height: 100%;
 				color: #fff;
-				border-radius: 20rpx;
 
 				text {
 					width: 100%;
@@ -107,7 +167,6 @@
 		.water-fall-container {
 			width: 100%;
 			flex: 1;
-			overflow: auto;
 
 			:deep(.tn-water-fall) {
 				flex-direction: row;
@@ -117,6 +176,7 @@
 				position: relative;
 				width: calc(100% - 20rpx);
 				margin: 10rpx;
+				box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
 
 				.tag {
 					position: absolute;
@@ -132,6 +192,14 @@
 					width: 100%;
 					height: auto;
 				}
+			}
+		}
+
+		.more {
+			padding: 10px 0;
+
+			&:deep(.tn-loadmore__content) {
+				flex-direction: row;
 			}
 		}
 	}

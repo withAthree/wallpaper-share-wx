@@ -1,19 +1,19 @@
 export type FilterType = 'resolution' | 'ratio' | 'model' | 'dateRange';
 
-export type FilterMode = 'random' | 'date_added' | 'toplist'
+export type FilterMode = 'random' | 'dateAdded' | 'toplist'
 
 export const FilterModes : Recode<FilterMode, string> = {
 	toplist: "最受欢迎"
-	date_added: "最新",
+	dateAdded: "最新",
 	random: "随机",
 }
 
-export type SortDateRange = 'last_week' | 'last_month' | 'last_3_months' | 'last_6_months' | 'last_year'
+export type SortDateRange = 'lastWeek' | 'lastMonth' | 'last3Months' | 'last6Months' | 'lastYear'
 
 export const SortDateRanges : Recode<SortDateRange, string> = {
-	last_week: "最近一周"
-	last_month: "最近一个月",
-	last_3_months: "最近三个月",
-	last_6_months: "最近六个月",
-	last_year: "最近一年"
+	lastWeek: "最近一周"
+	lastMonth: "最近一个月",
+	last3Months: "最近三个月",
+	last6Months: "最近六个月",
+	lastYear: "最近一年"
 }

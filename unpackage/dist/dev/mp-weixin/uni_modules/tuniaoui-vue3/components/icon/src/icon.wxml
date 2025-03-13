@@ -1,1 +1,0 @@
-<view class="{{['data-v-bcc701d5', f, virtualHostClass]}}" style="{{g + ';' + virtualHostStyle}}" bindtap="{{h}}" id="{{e}}" change:eS="{{uV.sS}}" eS="{{$eS[e]}}" hidden="{{virtualHostHidden}}"><image wx:if="{{a}}" class="image data-v-bcc701d5" src="{{b}}" mode="{{c}}"/><text wx:else class="{{['data-v-bcc701d5', 'icon', d]}}"/></view><wxs src="/common/uniView.wxs" module="uV"/>

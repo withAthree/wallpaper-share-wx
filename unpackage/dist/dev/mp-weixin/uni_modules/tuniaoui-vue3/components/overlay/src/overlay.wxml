@@ -1,1 +1,0 @@
-<view class="{{['data-v-2319383f', b, virtualHostClass]}}" style="{{c + ';' + virtualHostStyle}}" catchtap="{{d}}" catchtouchmove="{{e}}" id="{{a}}" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" hidden="{{virtualHostHidden}}"><slot/></view><wxs src="/common/uniView.wxs" module="uV"/>

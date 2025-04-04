@@ -1,0 +1,1 @@
+<view class="{{['layout', 'data-v-9ab60a64', d && 'bg-2', virtualHostClass]}}" id="{{c}}" change:eS="{{uV.sS}}" eS="{{$eS[c]}}" change:eA="{{uV.sA}}" eA="{{$eA[c]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden || false}}"><image wx:if="{{a}}" mode="heightFix" src="{{b}}" class="bg data-v-9ab60a64"></image><slot/></view><wxs src="/common/uniView.wxs" module="uV"/>

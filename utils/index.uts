@@ -1,0 +1,12 @@
+import CryptoJS from 'crypto-js'
+
+const SECRET_KEY = 'DSB1123456712345222244'
+// 解密函数
+export const decryptUrl = (encryptedData) => {
+	const key = CryptoJS.enc.Base64.parse(SECRET_KEY); // 将密钥从Base64解码
+	const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, key, {
+		mode: CryptoJS.mode.ECB, // 注意：ECB模式不推荐用于实际加密，这里仅用于演示
+		padding: CryptoJS.pad.Pkcs7
+	});
+	return decryptedBytes.toString(CryptoJS.enc.Utf8);
+}

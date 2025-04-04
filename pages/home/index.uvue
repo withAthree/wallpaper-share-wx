@@ -2,7 +2,8 @@
 	<Layouts>
 		<view class="main">
 			<view v-if="state.globalLoading" class="loading">
-				<TnLoading show animation mode="circle" color="#fff" size="50px" style="margin: auto;z-index: 10000" />
+				<TnLoading show animation mode="circle" color="rgb(239, 244, 255)" size="50px"
+					style="margin: auto;z-index: 10000" />
 				<TnOverlay show />
 			</view>
 			<view class="filter-box">
@@ -25,21 +26,24 @@
 			<scroll-view class="water-fall-container" :refresher-enabled="refresherEnabled" scroll-y refresher-enabled
 				refresher-default-style="white" :refresher-triggered="triggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort" @scrolltolower="scrolltolower">
-				<TnWaterFall :data="imgs" style="width: 100%" mode="calc">
-					<template #left="{ item }">
-						<view class="image-data" @click.stop="handleClickImage(item.src)">
-							<LazyLoad class="image" :src="item.src" />
-							<view class="tag">1920 × 1080</view>
+				<view class="box">
+					<view id="left" class="left">
+						<view v-for="item in leftList" class="image-data"
+							@click.stop="handleClickImage(item.smallImgUrl,item.bigImgUrl,item.picName,item.id)">
+							<LazyLoad class="image" :src="`${baseUrl}${item.bigImgUrl}`" />
+							<view class="tag">{{item.resolution}}</view>
 						</view>
-					</template>
-					<template #right="{ item }">
-						<view class="image-data" @click.stop="handleClickImage(item.src)">
-							<LazyLoad class="image" :src="item.src" />
-							<view class="tag">1920 × 1080</view>
+					</view>
+					<view id="right" class="right">
+						<view v-for="item in rightList" class="image-data"
+							@click.stop="handleClickImage(item.smallImgUrl,item.bigImgUrl,item.picName,item.id)">
+							<LazyLoad class="image" :src="`${baseUrl}${item.bigImgUrl}`" />
+							<view class="tag">{{item.resolution}}</view>
 						</view>
-					</template>
-				</TnWaterFall>
-				<TnLoadmore v-show="showLoadmore" :status="loadmoreStatus" size="14px" color="#fff" class="more" />
+					</view>
+				</view>
+				<tn-loadmore v-if="loadmoreStatus === 'loading' || loadmoreStatus === 'nomore'" :status="loadmoreStatus"
+					size="14px" color="rgb(239, 244, 255)" class="more" />
 			</scroll-view>
 		</view>
 		<Filter v-model="filterModalShow" :type="currentFilterType" />
@@ -56,10 +60,12 @@
 	import LazyLoad from './components/LazyLoad.uvue'
 	import type { LoadmoreStatus } from '@/uni_modules/tuniaoui-vue3'
 	import TnLoading from '@/uni_modules/tuniaoui-vue3/components/loading/src/loading.vue'
-	import TnLoadmore from '@/uni_modules/tuniaoui-vue3/components/loadmore/src/loadmore.vue'
 	import TnOverlay from '@/uni_modules/tuniaoui-vue3/components/overlay/src/overlay.vue'
 	import TnWaterFall from '@/uni_modules/tuniaoui-vue3/components/water-fall/src/water-fall.vue'
+	import { getImageList, BASE_URL } from '@/api'
+	import { decryptUrl } from '@/utils'
 
+	const imgList = ref<any[]>([])
 	const filterModalShow = ref(false)
 	const currentFilterType = ref<FilterType>('resolution')
 	// 当前下拉刷新状态
@@ -67,29 +73,104 @@
 	const refresherEnabled = ref(false)
 	//上拉加载
 	const loadmoreStatus = ref<LoadmoreStatus>('loadmore')
-	const showLoadmore = ref(false)
+	// 分页
+	const pageInfo = reactive({
+		current: 1,
+		size: 20,
+	})
+	// BASE_URL
+	const baseUrl = BASE_URL.replace('/api', '')
+	//是否还有数据
+	let hasMore = true
+	let isLoading = false
+
+	// 拿数据
+	watch(filterModalShow, val => {
+		if (!val) {
+			getData('loadmore')
+		}
+	}, {
+		immediate: true
+	})
+
+	function getData(type : 'loadmore' | 'refresh', successFn) {
+		const params = {
+			current: pageInfo.current,
+			size: pageInfo.size,
+		}
+		// 拿像素
+		if (state.currentResolution) {
+			const tempArr = state.currentResolution.match(/\d+/g)
+			params.width = Number(tempArr[0].trim())
+			params.height = Number(tempArr[1].trim())
+			params.compare = state.range
+		}
+		// 拿比例
+		if (state.currentRatios?.length) {
+			params.ratio = state.currentRatios.map(str => str.replace(' × ', '*'))
+		}
+		// 拿排序
+		if (state.currentSort) {
+			params.sort = state.currentSort
+			if (state.currentSort === 'toplist') {
+				params.timeLimit = state.currentDateRange
+			}
+		}
+		if (hasMore) {
+			isLoading = true
+			getImageList(params).then((res) => {
+				if (res.statusCode !== 200) return
+				const data = res.data.records.map(item => {
+					return {
+						smallImgUrl: decryptUrl(item.compressPicUrl),
+						bigImgUrl: decryptUrl(item.picUrl),
+						resolution: `${item.width} × ${item.height}`,
+						picName: item.picName,
+						width: item.width,
+						height: item.height
+					}
+				})
+
+				if (!data.length) {
+					loadmoreStatus.value = 'nomore'
+					hasMore = false
+					return
+				}
+
+				if (type === 'loadmore') {
+					imgList.value = imgList.value.concat(data)
+				} else {
+					imgList.value = data
+				}
+
+				if (successFn) {
+					successFn()
+				}
+
+				isLoading = false
+			})
+		}
+	}
 
 	function handleOpenFilterModal(filterType : FilterType) {
 		currentFilterType.value = filterType
 		filterModalShow.value = true
 	}
 
-	function handleClickImage(src) {
+	function handleClickImage(small, big, name, id) {
 		uni.navigateTo({
-			url: '/subPages/pages/detail/index',
+			url: `/subPages/pages/detail/index?data=${JSON.stringify({ small, big, name, id })}`,
 		})
 	}
 
-	function refresherpulling() {
-		// console.log('refresherpulling')
-	}
 
+	// 刷新
 	function refresherrefresh() {
 		console.log('refresherrefresh')
 		triggered.value = 'restore'
-		setTimeout(() => {
-			triggered.value = false
-		}, 3000)
+		pageInfo.current = 0
+		hasMore = true
+		getData('refresh', () => triggered.value = false)
 	}
 
 	function refresherrestore() {
@@ -102,18 +183,53 @@
 		triggered.value = false
 	}
 
+	// 加载更多
 	function scrolltolower() {
 		console.log('scrolltolower')
-		loadmoreStatus.value = 'loading'
-		setTimeout(() => {
-			loadmoreStatus.value = 'loadmore'
-		}, 3000)
+		if (hasMore && !isLoading) {
+			pageInfo.current = pageInfo.current + 1
+			loadmoreStatus.value = 'loading'
+			getData('loadmore', () => loadmoreStatus.value = 'loadmore')
+		}
 	}
 
+	const leftList = ref([])
+	const rightList = ref([])
+	const boxWidth = ref(0)
+
+	watch([imgList, boxWidth], ([data, width]) => {
+		if (!width) return
+
+		let leftHeight = 0
+		let rightHeight = 0
+
+		leftList.value = []
+		rightList.value = []
+
+		for (let i = 0; i < data.length; i += 1) {
+			const scale = width / data[i].width;
+			const height = data[i].height * scale;
+			if (i === 0 || leftHeight <= rightHeight) {
+				leftList.value.push(data[i])
+				leftHeight += height
+			} else if (i === 1 || leftHeight > rightHeight) {
+				rightList.value.push(data[i])
+				rightHeight += height
+			}
+		}
+
+		console.log(leftList.value.length, rightList.value.length)
+	})
+
+
 	onMounted(() => {
-		setTimeout(() => {
-			showLoadmore.value = true
-		}, 5000)
+		const instance = getCurrentInstance();
+		nextTick(() => {
+			const query = uni.createSelectorQuery().in(instance);
+			query.select('#left').boundingClientRect(data => {
+				boxWidth.value = data.width
+			}).exec()
+		})
 	})
 </script>
 
@@ -148,7 +264,7 @@
 				align-items: center;
 				padding: 0 12px;
 				height: 100%;
-				color: #fff;
+				color: rgb(239, 244, 255);
 
 				text {
 					width: 100%;
@@ -168,32 +284,43 @@
 			width: 100%;
 			flex: 1;
 
-			:deep(.tn-water-fall) {
+			.box {
+				display: flex;
 				flex-direction: row;
-			}
+				width: 100%;
 
-			.image-data {
-				position: relative;
-				width: calc(100% - 20rpx);
-				margin: 10rpx;
-				box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
-
-				.tag {
-					position: absolute;
-					bottom: 0;
-					width: 100%;
-					text-align: center;
-					color: #fff;
-					background-color: rgba(0, 0, 0, .165);
-					background-image: linear-gradient(to bottom, rgba(0, 0, 0, .03) 0, rgba(0, 0, 0, .3) 100%);
+				.left {
+					flex: 1;
 				}
 
-				.image {
-					width: 100%;
-					height: auto;
+				.right {
+					flex: 1;
+				}
+
+				.image-data {
+					position: relative;
+					width: calc(100% - 20rpx);
+					margin: 10rpx;
+					box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
+
+					.tag {
+						position: absolute;
+						bottom: 0;
+						width: 100%;
+						text-align: center;
+						color: rgb(239, 244, 255);
+						background-color: rgba(0, 0, 0, .165);
+						background-image: linear-gradient(to bottom, rgba(0, 0, 0, .03) 0, rgba(0, 0, 0, .3) 100%);
+					}
+
+					.image {
+						width: 100%;
+						height: auto;
+					}
 				}
 			}
 		}
+
 
 		.more {
 			padding: 10px 0;

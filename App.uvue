@@ -10,15 +10,30 @@
 		onLaunch: async function () {
 			console.log('App Launch')
 
+			wx.showShareMenu({
+				withShareTicket: true,
+				//设置下方的Menus菜单，才能够让发送给朋友与分享到朋友圈两个按钮可以点击
+				menus: ["shareAppMessage", "shareTimeline"]
+			})
+
 			setGlobalLoading(true)
 			setTempDir(`${uni.env.USER_DATA_PATH}/wallpaperTempDirAAA`)
 
 			// 登录
-			// const res = await getLoginCode();
-			// const response = await login({ code: res.code })
-			// if (response.code === 200) {
-			// 	uni.setStorageSync('token', response.data.token)
-			// }
+			if (!uni.getStorageSync('token')) {
+				const res = await getLoginCode();
+				const response = await login({ code: res.code })
+				if (response.statusCode === 200) {
+					uni.setStorageSync('token', response.data.token)
+				}
+			}
+
+			try {
+				fileMgr.rmdirSync(state.tempDir, true)
+			} catch (err) {
+				console.error('删除临时文件夹失败: ', err)
+			}
+
 			// 创建临时目录 
 			try {
 				fileMgr.mkdirSync(state.tempDir, false)
@@ -55,11 +70,6 @@
 		// #endif
 		onExit: function () {
 			console.log('App Exit')
-			try {
-				fileMgr.rmdirSync(state.tempDir, true)
-			} catch (err) {
-				console.error('删除临时文件夹失败: ', err)
-			}
 		},
 	}
 </script>

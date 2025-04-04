@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "tn-input": "../uni_modules/tuniaoui-vue3/components/input/src/input"
+  }
+}

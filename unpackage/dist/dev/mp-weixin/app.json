@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/home/index"
+  ],
+  "subPackages": [
+    {
+      "root": "subPages",
+      "pages": [
+        "pages/detail/index"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app x",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "preloadRule": {
+    "pages/home/index": {
+      "network": "all",
+      "packages": [
+        "subPages"
+      ]
+    }
+  },
+  "permission": {},
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {}
+}

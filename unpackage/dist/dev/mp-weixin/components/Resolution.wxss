@@ -1,0 +1,116 @@
+:host{display:flex;flex-direction:column}
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.container.data-v-977ab378 {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: linear-gradient(to bottom, #333 0, rgba(51, 51, 51, 0.9) 100%);
+  box-shadow: 0 20px 15px rgba(0, 0, 0, 0.7);
+  color: #aaa;
+}
+.container .range.data-v-977ab378 {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 36px;
+  background-color: rgba(30, 30, 30, 0.5);
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.4), 1px 1px 0 rgba(127, 127, 127, 0.1);
+  border-radius: 4px;
+}
+.container .range .item.data-v-977ab378 {
+  flex: 1;
+  margin: 4px 0;
+  text-align: center;
+  line-height: 28px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.75);
+  background-color: #353535;
+  background-image: linear-gradient(to bottom, #404040 0, #292929 100%);
+  border-radius: 2px;
+  transition-property: color, background, text-shadow, box-shadow;
+  transition-duration: 0.25s;
+}
+.container .range .range-active.data-v-977ab378 {
+  color: #eff4ff;
+  background-color: #5e5e5e;
+  background-image: linear-gradient(to bottom, #777 0, #444 100%);
+}
+.container .middle-text.data-v-977ab378 {
+  padding: 12px 0;
+}
+.container .box.data-v-977ab378 {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 2px;
+  margin-top: 10px;
+  width: 100%;
+  border-bottom: 1px solid #eff4ff;
+}
+.container .box .tabs.data-v-977ab378 {
+  flex: 1;
+  padding-bottom: 5px;
+  text-align: center;
+  color: #eff4ff;
+}
+.container .list-box.data-v-977ab378 {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.container .list-box .list-box-container.data-v-977ab378 {
+  flex: 1;
+}
+.container .list-box .list-box-container .item.data-v-977ab378 {
+  text-align: center;
+  font-size: 12px;
+  margin: 2px;
+  text-align: center;
+  line-height: 28px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.75);
+  background-color: #353535;
+  background-image: linear-gradient(to bottom, #404040 0, #292929 100%);
+  border-radius: 2px;
+  transition-property: color, background, text-shadow, box-shadow;
+  transition-duration: 0.25s;
+}
+.container .list-box .list-box-container .item-active.data-v-977ab378 {
+  color: #eff4ff;
+  background-color: #5e5e5e;
+  background-image: linear-gradient(to bottom, #777 0, #444 100%);
+}
+.container .mult.data-v-977ab378 {
+  padding: 0 4px;
+}
+.container .resolution-input-container.data-v-977ab378 {
+  display: flex;
+  flex-direction: row;
+  margin-top: 12px;
+  align-items: center;
+}
+.container .resolution-input-container .input.data-v-977ab378 {
+  flex: 1;
+  color: #eff4ff;
+}

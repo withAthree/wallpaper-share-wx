@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "uni-app x",
+  "navigationBarBackgroundColor": "#242426",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "tn-loadmore": "../../uni_modules/tuniaoui-vue3/components/loadmore/src/loadmore",
+    "layouts": "../../layouts/index",
+    "filter": "../../components/Filter",
+    "lazy-load": "./components/LazyLoad",
+    "tn-loading": "../../uni_modules/tuniaoui-vue3/components/loading/src/loading",
+    "tn-overlay": "../../uni_modules/tuniaoui-vue3/components/overlay/src/overlay"
+  }
+}

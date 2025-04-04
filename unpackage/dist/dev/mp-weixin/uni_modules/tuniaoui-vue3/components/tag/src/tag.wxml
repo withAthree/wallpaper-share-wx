@@ -1,0 +1,1 @@
+<label id="{{d}}" change:eS="{{uV.sS}}" eS="{{$eS[d]}}" change:eA="{{uV.sA}}" eA="{{$eA[d]}}" class="{{['data-v-09079301', virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden || false}}"><label class="{{['tn-tag', 'data-v-09079301', a]}}" style="{{b}}" catchtap="{{c}}"><slot/></label></label><wxs src="/common/uniView.wxs" module="uV"/>

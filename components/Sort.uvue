@@ -35,7 +35,7 @@
 	}
 
 	@mixin active-bg {
-		color: #fff;
+		color: rgb(239, 244, 255);
 		background-color: #5e5e5e;
 		background-image: linear-gradient(to bottom, #777 0, #444 100%);
 	}

@@ -5,26 +5,26 @@
 		<view class="imagecontent">
 			<movable-area v-if="bigFileDownloadSuccess" scale-area class="movable-area">
 				<movable-view class="movable-view" direction="all" scale="true" scale-min="1" scale-max="4">
-					<image class="lookimg" :src="`${state.tempDir}/${bigFileName}`" mode="aspectFit">
+					<image class="lookimg" :src="`${bigImgPath}`" mode="aspectFit">
 					</image>
 				</movable-view>
 			</movable-area>
-			<TnLoading v-else show animation mode="circle" color="#fff" size="50px" />
+			<TnLoading v-else show animation mode="circle" color="rgb(239, 244, 255)" size="50px" />
 			<view class="tool">
 				<!-- <AdVideo> -->
 				<view class="btn" @touchstart="downTouch = true" @touchend="downTouch = false"
 					:class="{touch: downTouch}" @click="handleClick">
 					<view>
-						<TnIcon name="folder-download-fill" color="#fff" size="24px" />
+						<TnIcon name="folder-download-fill" color="rgb(239, 244, 255)" size="24px" />
 						<text v-if="!downloadLoading" class="btn-text">下载</text>
-						<TnLoading v-else show animation mode="circle" color="#fff" />
+						<TnLoading v-else show animation mode="circle" color="rgb(239, 244, 255)" />
 					</view>
 				</view>
 				<!-- </AdVideo> -->
 				<view class="tn-mt-lg btn" @touchstart="shareTouch = true" @touchend="shareTouch = false"
 					:class="{touch: shareTouch}">
 					<view>
-						<TnIcon name="send-fill" color="#fff" size="24px" />
+						<TnIcon name="send-fill" color="rgb(239, 244, 255)" size="24px" />
 						<text class="btn-text">分享</text>
 					</view>
 				</view>
@@ -37,7 +37,7 @@
 	import Layouts from '@/layouts/index.uvue';
 	import AdVideo from '@/components/AdVideo.uvue'
 	import { state } from '@/store'
-	import { BASE_URL } from '@/pages/home/config.uts'
+	import { BASE_URL, downLoadSuccess } from '@/api'
 	import TnLoading from '@/uni_modules/tuniaoui-vue3/components/loading/src/loading.vue'
 	import TnNotify from '@/uni_modules/tuniaoui-vue3/components/notify/src/notify.vue'
 	import TnModal from '@/uni_modules/tuniaoui-vue3/components/modal/src/modal.vue'
@@ -49,68 +49,75 @@
 	const notifyRef = ref(null)
 	const modalRef = ref(null)
 
+	// BASE_URL
+	const baseUrl = BASE_URL.replace('/api', '')
+
+	let imgName = ref('')
 	// 小图片
-	const smallFileName = ref('exqg9w.jpg')
-	const smallFileUrl = `${BASE_URL}/exqg9w.jpg`
-	const smallImgPath = computed(() => `${state.tempDir}/${smallFileName.value}`)
+	let smallImgUrl = ''
+	const smallImgPath = computed(() => `${state.tempDir}/small_${imgName.value}`)
 	let smallFileDownloadSuccess = false
-	let smallDownloadPath = ''
 	// 大图片
-	const bigFileName = ref('wallhaven-3lxkd6.jpg')
-	const bigFileUrl = `${BASE_URL}/wallhaven-3lxkd6.jpg`
-	const bigImgPath = computed(() => `${state.tempDir}/${bigFileName.value}`)
+	let bigImgUrl = ''
+	const bigImgPath = computed(() => `${state.tempDir}/big_${imgName.value}`)
 	const bigFileDownloadSuccess = ref(false)
-	const bigDownloadPath = ref('')
 
 
-
-
-	onBeforeMount(() => {
-		uni.setNavigationBarTitle({
-			title: "1920 × 1080"
-		})
+	onLoad((param) => {
+		const data = JSON.parse(param.data)
+		smallImgUrl = `${baseUrl}${data.small}`
+		bigImgUrl = `${baseUrl}${data.big}`
+		imgName.value = data.name
 
 		const fileMgr = uni.getFileSystemManager()
 		try {
 			fileMgr.accessSync(bigImgPath.value)
 			console.log('大图片存在')
 			bigFileDownloadSuccess.value = true
-			bigDownloadPath.value = bigImgPath.value
 		} catch (err) {
 			console.error('大图片不存在: ', err)
-			preDownloadImg()
+			preDownloadBigImg()
 		}
 
 		try {
 			fileMgr.accessSync(smallImgPath.value)
 			console.log('小图片存在')
 			smallFileDownloadSuccess = true
-			smallDownloadPath = smallImgPath.value
 		} catch (err) {
 			console.error('小图片不存在: ', err)
-			preDownloadImg()
+			preDownloadSmallImg()
 		}
 	})
 
+
+
 	// 下载图片
-	function preDownloadImg() {
+	function preDownloadSmallImg() {
 		uni.downloadFile({
-			url: smallFileUrl,
+			url: smallImgUrl,
 			filePath: smallImgPath.value,
+			header: {
+				token: uni.getStorageSync('token'),
+				'Content-Type': imgName.value.endsWith('.png') ? 'image/png' : 'image/jpeg'
+			},
 			success: (res) => {
 				console.log('小图下载成功')
 				smallFileDownloadSuccess = true
-				smallDownloadPath = res.filePath
 			},
 			fail: (err) => { console.error('小图下载失败: ', err) }
 		})
+	}
+	function preDownloadBigImg() {
 		uni.downloadFile({
-			url: bigFileUrl,
+			url: bigImgUrl,
+			header: {
+				token: uni.getStorageSync('token'),
+				'Content-Type': imgName.value.endsWith('.png') ? 'image/png' : 'image/jpeg'
+			},
 			filePath: bigImgPath.value,
 			success: (res) => {
 				console.log('大图下载成功')
 				bigFileDownloadSuccess.value = true
-				bigDownloadPath.value = res.filePath
 			},
 			fail: (err) => {
 				console.error('大图下载失败: ', err)
@@ -205,7 +212,7 @@
 			confirm: () => {
 				// 看广告，获取原图
 				if (bigFileDownloadSuccess.value) {
-					downloadImg(bigDownloadPath.value)
+					downloadImg(bigImgPath.value)
 				} else {
 					downloadFailMsg()
 				}
@@ -213,7 +220,7 @@
 			cancel: () => {
 				// 获取压缩图
 				if (smallFileDownloadSuccess) {
-					downloadImg(smallDownloadPath)
+					downloadImg(smallImgPath.value)
 				} else {
 					downloadFailMsg()
 				}
@@ -298,7 +305,7 @@
 		}
 
 		.btn-text {
-			color: #fff;
+			color: rgb(239, 244, 255);
 			font-size: tovmin(26);
 		}
 	}

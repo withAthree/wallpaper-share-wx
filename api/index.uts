@@ -1,5 +1,11 @@
 import { http } from '/request/index.uts'
 
-const BASE_URL = 'http://192.168.65.53:8080/api'
+export const BASE_URL = 'http://47.109.105.139:18823/api'
 
 export const login = (params) => http.post(`${BASE_URL}/auth/login`, params)
+
+// 分页接口
+export const getImageList = (params) => http.get(`${BASE_URL}/picFiles/listPage`, params)
+
+// 下载成功
+export const downLoadSuccess = (params) => http.post(`${BASE_URL}/picFiles/downloadCount`, params)

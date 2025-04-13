@@ -1,6 +1,6 @@
 "use strict";
 const request_index = require("../request/index.js");
-const BASE_URL = "http://47.109.105.139:18823/api";
+const BASE_URL = "https://pic.tempestcdn.fun/api";
 const login = (params = null) => {
   return request_index.http.post(`${BASE_URL}/auth/login`, params);
 };

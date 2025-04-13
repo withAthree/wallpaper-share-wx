@@ -2,6 +2,7 @@
 const common_vendor = require("../../../common/vendor.js");
 const store_index = require("../../../store/index.js");
 const api_index = require("../../../api/index.js");
+const subPages_pages_detail_utils = require("./utils.js");
 if (!Math) {
   (TnNotify + TnModal + TnLoading + TnIcon + common_vendor.unref(Layouts))();
 }
@@ -19,39 +20,47 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent(new UTSJSONObjec
     const notifyRef = common_vendor.ref(null);
     const modalRef = common_vendor.ref(null);
     const baseUrl = api_index.BASE_URL.replace("/api", "");
-    let imgName = common_vendor.ref("");
+    const smallImgName = common_vendor.ref("");
+    const bigImgName = common_vendor.ref("");
     let smallImgUrl = "";
     const smallImgPath = common_vendor.computed(() => {
-      return `${store_index.state.tempDir}/small_${imgName.value}`;
+      return `${store_index.state.tempDir}/small_${smallImgName.value}`;
     });
     let smallFileDownloadSuccess = false;
     let bigImgUrl = "";
     const bigImgPath = common_vendor.computed(() => {
-      return `${store_index.state.tempDir}/big_${imgName.value}`;
+      return `${store_index.state.tempDir}/big_${bigImgName.value}`;
     });
     const bigFileDownloadSuccess = common_vendor.ref(false);
+    const downloadBigImage = (fileMgr = null) => {
+      try {
+        fileMgr.accessSync(bigImgPath.value);
+        common_vendor.index.__f__("log", "at subPages/pages/detail/index.uvue:71", "大图片存在");
+        bigFileDownloadSuccess.value = true;
+      } catch (err) {
+        common_vendor.index.__f__("error", "at subPages/pages/detail/index.uvue:74", "大图片不存在: ", err);
+        return preDownloadBigImg();
+      }
+    };
+    const downloadSmallImage = (fileMgr = null) => {
+      try {
+        fileMgr.accessSync(smallImgPath.value);
+        common_vendor.index.__f__("log", "at subPages/pages/detail/index.uvue:82", "小图片存在");
+        smallFileDownloadSuccess = true;
+      } catch (err) {
+        common_vendor.index.__f__("error", "at subPages/pages/detail/index.uvue:85", "小图片不存在: ", err);
+        preDownloadSmallImg();
+      }
+    };
     common_vendor.onLoad((param) => {
       const data = UTS.JSON.parse(param.data);
       smallImgUrl = `${baseUrl}${data.small}`;
       bigImgUrl = `${baseUrl}${data.big}`;
-      imgName.value = data.name;
+      smallImgName.value = subPages_pages_detail_utils.getName(data.small);
+      bigImgName.value = subPages_pages_detail_utils.getName(data.big);
       const fileMgr = common_vendor.index.getFileSystemManager();
-      try {
-        fileMgr.accessSync(bigImgPath.value);
-        common_vendor.index.__f__("log", "at subPages/pages/detail/index.uvue:75", "大图片存在");
-        bigFileDownloadSuccess.value = true;
-      } catch (err) {
-        common_vendor.index.__f__("error", "at subPages/pages/detail/index.uvue:78", "大图片不存在: ", err);
-        preDownloadBigImg();
-      }
-      try {
-        fileMgr.accessSync(smallImgPath.value);
-        common_vendor.index.__f__("log", "at subPages/pages/detail/index.uvue:84", "小图片存在");
-        smallFileDownloadSuccess = true;
-      } catch (err) {
-        common_vendor.index.__f__("error", "at subPages/pages/detail/index.uvue:87", "小图片不存在: ", err);
-        preDownloadSmallImg();
-      }
+      downloadSmallImage(fileMgr);
+      downloadBigImage(fileMgr);
     });
     function preDownloadSmallImg() {
       common_vendor.index.downloadFile({
@@ -59,14 +68,14 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent(new UTSJSONObjec
         filePath: smallImgPath.value,
         header: new UTSJSONObject({
           token: common_vendor.index.getStorageSync("token"),
-          "Content-Type": imgName.value.endsWith(".png") ? "image/png" : "image/jpeg"
+          "Content-Type": smallImgName.value.endsWith(".png") ? "image/png" : "image/jpeg"
         }),
         success: (res) => {
-          common_vendor.index.__f__("log", "at subPages/pages/detail/index.uvue:104", "小图下载成功");
+          common_vendor.index.__f__("log", "at subPages/pages/detail/index.uvue:114", "小图下载成功");
           smallFileDownloadSuccess = true;
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at subPages/pages/detail/index.uvue:107", "小图下载失败: ", err);
+          common_vendor.index.__f__("error", "at subPages/pages/detail/index.uvue:117", "小图下载失败: ", err);
         }
       });
     }
@@ -75,15 +84,15 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent(new UTSJSONObjec
         url: bigImgUrl,
         header: new UTSJSONObject({
           token: common_vendor.index.getStorageSync("token"),
-          "Content-Type": imgName.value.endsWith(".png") ? "image/png" : "image/jpeg"
+          "Content-Type": bigImgName.value.endsWith(".png") ? "image/png" : "image/jpeg"
         }),
         filePath: bigImgPath.value,
         success: (res) => {
-          common_vendor.index.__f__("log", "at subPages/pages/detail/index.uvue:119", "大图下载成功");
+          common_vendor.index.__f__("log", "at subPages/pages/detail/index.uvue:129", "大图下载成功");
           bigFileDownloadSuccess.value = true;
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at subPages/pages/detail/index.uvue:123", "大图下载失败: ", err);
+          common_vendor.index.__f__("error", "at subPages/pages/detail/index.uvue:133", "大图下载失败: ", err);
         }
       });
     }
@@ -95,7 +104,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent(new UTSJSONObjec
         position: "center"
       }));
     };
-    function downloadImg(filePath = null) {
+    function downloadImg(filePath) {
       downloadLoading.value = true;
       common_vendor.index.saveImageToPhotosAlbum({
         filePath,

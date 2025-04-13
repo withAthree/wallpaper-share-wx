@@ -42,6 +42,7 @@
 	import TnNotify from '@/uni_modules/tuniaoui-vue3/components/notify/src/notify.vue'
 	import TnModal from '@/uni_modules/tuniaoui-vue3/components/modal/src/modal.vue'
 	import TnIcon from '@/uni_modules/tuniaoui-vue3/components/icon/src/icon.vue'
+	import {getName} from './utils.ts'
 
 	const downTouch = ref(false)
 	const shareTouch = ref(false)
@@ -52,33 +53,30 @@
 	// BASE_URL
 	const baseUrl = BASE_URL.replace('/api', '')
 
-	let imgName = ref('')
+	const smallImgName = ref('')
+	const bigImgName = ref('')
 	// 小图片
 	let smallImgUrl = ''
-	const smallImgPath = computed(() => `${state.tempDir}/small_${imgName.value}`)
+	const smallImgPath = computed(() => `${state.tempDir}/small_${smallImgName.value}`)
 	let smallFileDownloadSuccess = false
 	// 大图片
 	let bigImgUrl = ''
-	const bigImgPath = computed(() => `${state.tempDir}/big_${imgName.value}`)
+	const bigImgPath = computed(() => `${state.tempDir}/big_${bigImgName.value}`)
 	const bigFileDownloadSuccess = ref(false)
 
 
-	onLoad((param) => {
-		const data = JSON.parse(param.data)
-		smallImgUrl = `${baseUrl}${data.small}`
-		bigImgUrl = `${baseUrl}${data.big}`
-		imgName.value = data.name
-
-		const fileMgr = uni.getFileSystemManager()
+	const downloadBigImage = (fileMgr) => {
 		try {
 			fileMgr.accessSync(bigImgPath.value)
 			console.log('大图片存在')
 			bigFileDownloadSuccess.value = true
 		} catch (err) {
 			console.error('大图片不存在: ', err)
-			preDownloadBigImg()
+			return preDownloadBigImg()
 		}
+	}
 
+	const downloadSmallImage = (fileMgr) => {
 		try {
 			fileMgr.accessSync(smallImgPath.value)
 			console.log('小图片存在')
@@ -87,6 +85,18 @@
 			console.error('小图片不存在: ', err)
 			preDownloadSmallImg()
 		}
+	}
+
+	onLoad((param) => {
+		const data = JSON.parse(param.data)
+		smallImgUrl = `${baseUrl}${data.small}`
+		bigImgUrl = `${baseUrl}${data.big}`
+		smallImgName.value = getName(data.small)
+		bigImgName.value = getName(data.big)
+		
+		const fileMgr = uni.getFileSystemManager()
+		downloadSmallImage(fileMgr)
+		downloadBigImage(fileMgr)
 	})
 
 
@@ -98,7 +108,7 @@
 			filePath: smallImgPath.value,
 			header: {
 				token: uni.getStorageSync('token'),
-				'Content-Type': imgName.value.endsWith('.png') ? 'image/png' : 'image/jpeg'
+				'Content-Type': smallImgName.value.endsWith('.png') ? 'image/png' : 'image/jpeg'
 			},
 			success: (res) => {
 				console.log('小图下载成功')
@@ -112,7 +122,7 @@
 			url: bigImgUrl,
 			header: {
 				token: uni.getStorageSync('token'),
-				'Content-Type': imgName.value.endsWith('.png') ? 'image/png' : 'image/jpeg'
+				'Content-Type': bigImgName.value.endsWith('.png') ? 'image/png' : 'image/jpeg'
 			},
 			filePath: bigImgPath.value,
 			success: (res) => {
@@ -133,7 +143,7 @@
 		})
 	}
 
-	function downloadImg(filePath) {
+	function downloadImg(filePath:string) {
 		downloadLoading.value = true
 		uni.saveImageToPhotosAlbum({
 			filePath: filePath,

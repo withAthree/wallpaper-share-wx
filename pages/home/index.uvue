@@ -30,14 +30,14 @@
 					<view id="left" class="left">
 						<view v-for="item in leftList" class="image-data"
 							@click.stop="handleClickImage(item.smallImgUrl,item.bigImgUrl,item.picName,item.id)">
-							<LazyLoad class="image" :src="`${baseUrl}${item.bigImgUrl}`" />
+							<LazyLoad class="image" :src="`${baseUrl}${item.smallImgUrl}`" />
 							<view class="tag">{{item.resolution}}</view>
 						</view>
 					</view>
 					<view id="right" class="right">
 						<view v-for="item in rightList" class="image-data"
 							@click.stop="handleClickImage(item.smallImgUrl,item.bigImgUrl,item.picName,item.id)">
-							<LazyLoad class="image" :src="`${baseUrl}${item.bigImgUrl}`" />
+							<LazyLoad class="image" :src="`${baseUrl}${item.smallImgUrl}`" />
 							<view class="tag">{{item.resolution}}</view>
 						</view>
 					</view>
@@ -76,7 +76,7 @@
 	// 分页
 	const pageInfo = reactive({
 		current: 1,
-		size: 20,
+		size: 12,
 	})
 	// BASE_URL
 	const baseUrl = BASE_URL.replace('/api', '')
@@ -87,13 +87,14 @@
 	// 拿数据
 	watch(filterModalShow, val => {
 		if (!val) {
-			getData('loadmore')
+			pageInfo.current = 1
+			getData('refresh')
 		}
 	}, {
 		immediate: true
 	})
 
-	function getData(type : 'loadmore' | 'refresh', successFn) {
+	function getData(type : 'loadmore' | 'refresh', successFn?: Function) {
 		const params = {
 			current: pageInfo.current,
 			size: pageInfo.size,
@@ -130,17 +131,22 @@
 						height: item.height
 					}
 				})
-
+				console.log(123,data)
 				if (!data.length) {
 					loadmoreStatus.value = 'nomore'
 					hasMore = false
 					return
 				}
-
+				
 				if (type === 'loadmore') {
 					imgList.value = imgList.value.concat(data)
 				} else {
 					imgList.value = data
+				}
+				
+				if(data.length < 12){
+					loadmoreStatus.value = 'nomore'
+					hasMore = false
 				}
 
 				if (successFn) {
@@ -168,7 +174,7 @@
 	function refresherrefresh() {
 		console.log('refresherrefresh')
 		triggered.value = 'restore'
-		pageInfo.current = 0
+		pageInfo.current = 1
 		hasMore = true
 		getData('refresh', () => triggered.value = false)
 	}
@@ -215,6 +221,9 @@
 			} else if (i === 1 || leftHeight > rightHeight) {
 				rightList.value.push(data[i])
 				rightHeight += height
+			}else {
+				leftList.value.push(data[i])
+				leftHeight += height
 			}
 		}
 

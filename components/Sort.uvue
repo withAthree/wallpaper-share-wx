@@ -13,7 +13,7 @@
 	import { FilterMode, FilterModes } from '../types'
 
 
-	const checkedSort = ref<FilterMode>('random')
+	const checkedSort = ref<FilterMode>('dateAdded')
 
 	function handleClickSort(res) {
 		checkedSort.value = res

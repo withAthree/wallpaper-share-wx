@@ -1,0 +1,4 @@
+export const getName = (str: string) => {
+	const index = str.lastIndexOf('/')
+	return str.substring(index + 1)
+}

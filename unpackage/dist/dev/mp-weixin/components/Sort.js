@@ -5,7 +5,7 @@ const types_index = require("../types/index.js");
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent(new UTSJSONObject({
   __name: "Sort",
   setup(__props) {
-    const checkedSort = common_vendor.ref("random");
+    const checkedSort = common_vendor.ref("dateAdded");
     function handleClickSort(res = null) {
       checkedSort.value = res;
     }

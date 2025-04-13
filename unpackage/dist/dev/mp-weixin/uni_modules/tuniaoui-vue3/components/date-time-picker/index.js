@@ -18,7 +18,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     initDateTimePicker(props.initCurrentDateTime);
     return (_ctx = null, _cache = null) => {
       const __returned__ = {
-        a: common_vendor.sr(pickerRef, "e2e1502a-0", {
+        a: common_vendor.sr(pickerRef, "df2fb1b6-0", {
           "k": "pickerRef"
         }),
         b: common_vendor.gei(_ctx, ""),

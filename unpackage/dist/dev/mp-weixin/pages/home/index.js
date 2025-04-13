@@ -86,14 +86,15 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     const loadmoreStatus = common_vendor.ref("loadmore");
     const pageInfo = common_vendor.reactive(new UTSJSONObject({
       current: 1,
-      size: 20
+      size: 12
     }));
     const baseUrl = api_index.BASE_URL.replace("/api", "");
     let hasMore = true;
     let isLoading = false;
     common_vendor.watch(filterModalShow, (val) => {
       if (!val) {
-        getData("loadmore");
+        pageInfo.current = 1;
+        getData("refresh");
       }
     }, {
       immediate: true
@@ -139,6 +140,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
               height: item.height
             });
           });
+          common_vendor.index.__f__("log", "at pages/home/index.uvue:134", 123, data);
           if (!data.length) {
             loadmoreStatus.value = "nomore";
             hasMore = false;
@@ -148,6 +150,10 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
             imgList.value = imgList.value.concat(data);
           } else {
             imgList.value = data;
+          }
+          if (data.length < 12) {
+            loadmoreStatus.value = "nomore";
+            hasMore = false;
           }
           if (successFn) {
             successFn();
@@ -166,24 +172,24 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       });
     }
     function refresherrefresh() {
-      common_vendor.index.__f__("log", "at pages/home/index.uvue:169", "refresherrefresh");
+      common_vendor.index.__f__("log", "at pages/home/index.uvue:175", "refresherrefresh");
       triggered.value = "restore";
-      pageInfo.current = 0;
+      pageInfo.current = 1;
       hasMore = true;
       getData("refresh", () => {
         return triggered.value = false;
       });
     }
     function refresherrestore() {
-      common_vendor.index.__f__("log", "at pages/home/index.uvue:177", "refresherrestore");
+      common_vendor.index.__f__("log", "at pages/home/index.uvue:183", "refresherrestore");
       triggered.value = "restore";
     }
     function refresherabort() {
-      common_vendor.index.__f__("log", "at pages/home/index.uvue:182", "refresherabort");
+      common_vendor.index.__f__("log", "at pages/home/index.uvue:188", "refresherabort");
       triggered.value = false;
     }
     function scrolltolower() {
-      common_vendor.index.__f__("log", "at pages/home/index.uvue:188", "scrolltolower");
+      common_vendor.index.__f__("log", "at pages/home/index.uvue:194", "scrolltolower");
       if (hasMore && !isLoading) {
         pageInfo.current = pageInfo.current + 1;
         loadmoreStatus.value = "loading";
@@ -212,9 +218,12 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         } else if (i === 1 || leftHeight > rightHeight) {
           rightList.value.push(data[i]);
           rightHeight += height;
+        } else {
+          leftList.value.push(data[i]);
+          leftHeight += height;
         }
       }
-      common_vendor.index.__f__("log", "at pages/home/index.uvue:221", leftList.value.length, rightList.value.length);
+      common_vendor.index.__f__("log", "at pages/home/index.uvue:230", leftList.value.length, rightList.value.length);
     });
     common_vendor.onMounted(() => {
       const instance = common_vendor.getCurrentInstance();
@@ -263,7 +272,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
           return new UTSJSONObject({
             a: "e6634c2d-3-" + i0 + ",e6634c2d-0",
             b: common_vendor.p(new UTSJSONObject({
-              src: `${common_vendor.unref(baseUrl)}${item.bigImgUrl}`
+              src: `${common_vendor.unref(baseUrl)}${item.smallImgUrl}`
             })),
             c: common_vendor.t(item.resolution),
             d: common_vendor.o(($event = null) => {
@@ -276,7 +285,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
           return new UTSJSONObject({
             a: "e6634c2d-4-" + i0 + ",e6634c2d-0",
             b: common_vendor.p(new UTSJSONObject({
-              src: `${common_vendor.unref(baseUrl)}${item.bigImgUrl}`
+              src: `${common_vendor.unref(baseUrl)}${item.smallImgUrl}`
             })),
             c: common_vendor.t(item.resolution),
             d: common_vendor.o(($event = null) => {

@@ -1,6 +1,6 @@
 import { http } from '/request/index.uts'
 
-export const BASE_URL = 'http://47.109.105.139:18823/api'
+export const BASE_URL = 'https://pic.tempestcdn.fun/api'
 
 export const login = (params) => http.post(`${BASE_URL}/auth/login`, params)
 
